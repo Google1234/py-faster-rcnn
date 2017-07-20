@@ -8,11 +8,17 @@
 """Factory method for easily getting imdbs by name."""
 
 __sets = {}
-
+from datasets.sign import  sign
 from datasets.pascal_voc import pascal_voc
 from datasets.coco import coco
 import numpy as np
 
+# Set up my own dataset
+for year in ['2017']:
+    for split in ['train', 'val', 'trainval', 'test']:
+        name = 'sign_{}_{}'.format(year, split)
+        __sets[name] = (lambda split=split, year=year: sign(split, year))
+        
 # Set up voc_<year>_<split> using selective search "fast" mode
 for year in ['2007', '2012']:
     for split in ['train', 'val', 'trainval', 'test']:
