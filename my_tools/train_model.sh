@@ -4,8 +4,10 @@
 # DATASET is either pascal_voc or coco.
 #
 # Example:
-# ./my_tools/train_model.sh 0 VGG16 sign data/imagenet_models/VGG16.v2.caffemodel \
+# ./my_tools/train_model.sh 0 VGG16 sign data/imagenet_models/VGG16.v2.caffemodel  faster_rcnn_end2end \
 #   --set EXP_DIR foobar RNG_SEED 42 TRAIN.SCALES "[400, 500, 600, 700]"
+# Example : Resnet
+# ./my_tools/train_model.sh 0 ResNet101_BN_SCALE_Merged_OHEM sign data/imagenet_models/ResNet101_BN_SCALE_Merged.caffemodel faster_rcnn_end2end_ohem  
 
 set -x
 set -e
@@ -17,10 +19,11 @@ NET=$2
 NET_lc=${NET,,}
 DATASET=$3
 INIT_MODEL=$4
+METHOD=$5
 
 array=( $@ )
 len=${#array[@]}
-EXTRA_ARGS=${array[@]:4:$len}
+EXTRA_ARGS=${array[@]:5:$len}
 EXTRA_ARGS_SLUG=${EXTRA_ARGS// /_}
 
 case $DATASET in 
@@ -42,7 +45,7 @@ exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
 time ./tools/train_net.py --gpu ${GPU_ID} \
-  --solver models/${PT_DIR}/${NET}/faster_rcnn_end2end/solver.prototxt \
+  --solver models/${PT_DIR}/${NET}/${METHOD}/solver.prototxt \
   --weights ${INIT_MODEL}  \
   --imdb ${TRAIN_IMDB} \
   --iters ${ITERS} \
@@ -54,7 +57,7 @@ NET_FINAL=`grep -B 1 "done solving" ${LOG} | grep "Wrote snapshot" | awk '{print
 set -x
 echo final net "$NET_FINAL"
 time ./tools/test_net.py --gpu ${GPU_ID} \
-  --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test.prototxt \
+  --def models/${PT_DIR}/${NET}/${METHOD}/test.prototxt \
   --net ${NET_FINAL} \
   --imdb ${TEST_IMDB} \
   --cfg experiments/cfgs/faster_rcnn_end2end.yml \
