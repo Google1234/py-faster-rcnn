@@ -7,6 +7,9 @@
 # ./experiments/scripts/faster_rcnn_end2end.sh 0 VGG_CNN_M_1024 pascal_voc \
 #   --set EXP_DIR foobar RNG_SEED 42 TRAIN.SCALES "[400, 500, 600, 700]"
 
+#example :
+#./my_tools/test_model.sh 0 VGG16 sign /home/jtao/jto/code/py-faster-rcnn/output/faster_rcnn_end2end/sign_2017_train/vgg16_faster_rcnn_iter_20000.caffemodel use 
+
 set -x
 set -e
 
@@ -16,34 +19,24 @@ GPU_ID=$1
 NET=$2
 NET_lc=${NET,,}
 DATASET=$3
+NET_FINAL=$4
+TEST_ON_TRAIN_DATA=$5
 
 array=( $@ )
 len=${#array[@]}
-EXTRA_ARGS=${array[@]:3:$len}
+EXTRA_ARGS=${array[@]:5:$len}
 EXTRA_ARGS_SLUG=${EXTRA_ARGS// /_}
 
 case $DATASET in
-  pascal_voc)
-    TRAIN_IMDB="voc_2007_trainval"
-    TEST_IMDB="voc_2007_test"
-    PT_DIR="pascal_voc"
-    ITERS=70000
-    ;;
-  coco)
-    # This is a very long and slow training schedule
-    # You can probably use fewer iterations and reduce the
-    # time to the LR drop (set in the solver to 350,000 iterations).
-    TRAIN_IMDB="coco_2014_train"
-    TEST_IMDB="coco_2014_minival"
-    PT_DIR="coco"
-    ITERS=490000
-    ;;
   sign)
-    #my own sign model
-    TRAIN_IMDB="sign_2017_train"
     TEST_IMDB="sign_2017_trainval"
+    if [ "$TEST_ON_TRAIN_DATA" = "use" ]
+    then
+	TRAIN_IMDB="sign_2017_train"
+    else
+	echo not test on train dataset
+    fi
     PT_DIR="sign"
-    ITERS=490000
     ;;
   *)
     echo "No dataset given"
@@ -55,21 +48,23 @@ LOG="experiments/logs/faster_rcnn_end2end_${NET}_${EXTRA_ARGS_SLUG}.txt.`date +'
 exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
-time ./tools/train_net.py --gpu ${GPU_ID} \
-  --solver models/${PT_DIR}/${NET}/faster_rcnn_end2end/solver.prototxt \
-  --weights data/imagenet_models/${NET}.v2.caffemodel \
-  --imdb ${TRAIN_IMDB} \
-  --iters ${ITERS} \
-  --cfg experiments/cfgs/faster_rcnn_end2end.yml \
-  ${EXTRA_ARGS}
 
-set +x
-NET_FINAL=`grep -B 1 "done solving" ${LOG} | grep "Wrote snapshot" | awk '{print $4}'`
-set -x
-echo final net "$NET_FINAL"
+
 time ./tools/test_net.py --gpu ${GPU_ID} \
   --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test.prototxt \
   --net ${NET_FINAL} \
   --imdb ${TEST_IMDB} \
   --cfg experiments/cfgs/faster_rcnn_end2end.yml \
   ${EXTRA_ARGS}
+
+if [ "$TEST_ON_TRAIN_DATA" = "use" ]
+then
+   time ./tools/test_net.py --gpu ${GPU_ID} \
+  --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test.prototxt \
+  --net ${NET_FINAL} \
+  --imdb ${TRAIN_IMDB} \
+  --cfg experiments/cfgs/faster_rcnn_end2end.yml \
+  ${EXTRA_ARGS}
+else
+   echo false
+fi
