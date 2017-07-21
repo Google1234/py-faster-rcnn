@@ -49,7 +49,7 @@ time ./tools/train_net.py --gpu ${GPU_ID} \
   --weights ${INIT_MODEL}  \
   --imdb ${TRAIN_IMDB} \
   --iters ${ITERS} \
-  --cfg experiments/cfgs/faster_rcnn_end2end.yml \
+  --cfg experiments/cfgs/${METHOD}.yml \
   ${EXTRA_ARGS}
 
 set +x
@@ -60,5 +60,8 @@ time ./tools/test_net.py --gpu ${GPU_ID} \
   --def models/${PT_DIR}/${NET}/${METHOD}/test.prototxt \
   --net ${NET_FINAL} \
   --imdb ${TEST_IMDB} \
-  --cfg experiments/cfgs/faster_rcnn_end2end.yml \
+  --cfg experiments/cfgs/${METHOD}.yml \
+#for method :ohem may be try add below?
+#  --num_dets 2000 \
+#  --det_thresh 0.00001 \
   ${EXTRA_ARGS}
