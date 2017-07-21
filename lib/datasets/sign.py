@@ -16,12 +16,12 @@ import utils.cython_bbox
 import cPickle
 import subprocess
 import uuid
-from voc_eval import voc_eval
+from  sign_eval import sign_eval
 from fast_rcnn.config import cfg
 
 class sign(imdb):
     def __init__(self, image_set, year, devkit_path=None):
-        imdb.__init__(self, 'voc_' + year + '_' + image_set)
+        imdb.__init__(self, 'sign_' + year + '_' + image_set)
         self._year = year
         self._image_set = image_set
         self._devkit_path = self._get_default_path() if devkit_path is None \
@@ -60,7 +60,7 @@ class sign(imdb):
         """
         Construct an image path from the image's "index" identifier.
         """
-        image_path = os.path.join(self._data_path, 'PNGImage',
+        image_path = os.path.join(self._data_path, 'PNGImages',
                                   index + self._image_ext)
         assert os.path.exists(image_path), \
                 'Path does not exist: {}'.format(image_path)
@@ -84,7 +84,7 @@ class sign(imdb):
         """
         Return the default path where PASCAL VOC is expected to be installed.
         """
-        return os.path.join(cfg.DATA_DIR, 'sign' + self._year)
+        return os.path.join(cfg.DATA_DIR, 'sign_' + self._year)
 
     def gt_roidb(self):
         """
@@ -226,8 +226,6 @@ class sign(imdb):
         path = os.path.join(
             self._devkit_path,
             'results',
-            'sign' + self._year,
-            'Main',
             filename)
         return path
 
@@ -269,7 +267,7 @@ class sign(imdb):
             if cls == '__background__':
                 continue
             filename = self._get_voc_results_file_template().format(cls)
-            rec, prec, ap = voc_eval(
+            rec, prec, ap = sign_eval(
                 filename, annopath, imagesetfile, cls, cachedir, ovthresh=0.5,
                 use_07_metric=use_07_metric)
             aps += [ap]

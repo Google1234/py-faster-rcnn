@@ -3,3 +3,11 @@
 lib/build
 lib/pycocotools/_mask.c
 lib/pycocotools/_mask.so
+
+nohup.out
+/output/
+/data/cache/
+/data/sign_2017/
+/data/imagenet_models/
+/experiments/logs
+
