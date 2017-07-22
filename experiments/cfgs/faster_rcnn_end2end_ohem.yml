@@ -1,12 +1,15 @@
-EXP_DIR: fast_rcnn_ohem
-MATLAB: /opt/matlab/8.1/bin/matlab
+EXP_DIR: faster_rcnn_end2end_ohem
 TRAIN:
-  BG_THRESH_LO: 0.0
-  # we use gradient accumulation,
-  # see solver.prototxt (iter_size: 2)
+  HAS_RPN: True
   IMS_PER_BATCH: 1
-  # adjust batch_size for iter_size
+  BBOX_NORMALIZE_TARGETS_PRECOMPUTED: True
+  RPN_POSITIVE_OVERLAP: 0.7
+  RPN_BATCHSIZE: 256
+  PROPOSAL_METHOD: gt
+  BG_THRESH_LO: 0.0
   BATCH_SIZE: 64
+  RPN_POST_NMS_TOP_N: 700
   USE_OHEM: True
-  # Wasn't used in the paper (impact unknown).
   ASPECT_GROUPING: False
+TEST:
+  HAS_RPN: True 
