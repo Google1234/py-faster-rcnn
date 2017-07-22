@@ -35,7 +35,7 @@ __C.TRAIN = edict()
 
 # Scales to use during training (can list multiple scales)
 # Each scale is the pixel size of an image's shortest side
-__C.TRAIN.SCALES =(600.720,) # (600,)
+__C.TRAIN.SCALES =(600,720,) # (600,)
 
 # Max pixel size of the longest side of a scaled input image
 __C.TRAIN.MAX_SIZE = 1280 #1000
