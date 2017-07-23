@@ -7,7 +7,7 @@
 # ./my_tools/train_model.sh 0 VGG16 sign data/imagenet_models/VGG16.v2.caffemodel  faster_rcnn_end2end \
 #   --set EXP_DIR foobar RNG_SEED 42 TRAIN.SCALES "[400, 500, 600, 700]"
 # Example : Resnet
-# ./my_tools/train_model.sh 0 ResNet101_BN_SCALE_Merged_OHEM sign data/imagenet_models/ResNet101_BN_SCALE_Merged.caffemodel faster_rcnn_end2end  
+# ./my_tools/train_model.sh 0 ResNet101_BN_SCALE_Merged_OHEM faster_rcnn_end2end sign data/imagenet_models/ResNet101_BN_SCALE_Merged.caffemodel   
 
 set -x
 set -e
@@ -17,9 +17,9 @@ export PYTHONUNBUFFERED="True"
 GPU_ID=$1
 NET=$2
 NET_lc=${NET,,}
-DATASET=$3
-INIT_MODEL=$4
-METHOD=$5
+METHOD=$3
+DATASET=$4
+INIT_MODEL=$5
 
 array=( $@ )
 len=${#array[@]}
