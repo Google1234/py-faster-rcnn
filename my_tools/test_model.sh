@@ -8,8 +8,8 @@
 #   --set EXP_DIR foobar RNG_SEED 42 TRAIN.SCALES "[400, 500, 600, 700]"
 
 #example :
-#./my_tools/test_model.sh 0 VGG16 sign /home/jtao/jto/code/py-faster-rcnn/output/faster_rcnn_end2end/sign_2017_train/vgg16_faster_rcnn_iter_20000.caffemodel use 
-
+#./my_tools/test_model.sh 0 VGG16 faster_rcnn_end2end sign /home/jtao/jto/code/py-faster-rcnn/output/faster_rcnn_end2end/sign_2017_train/vgg16_faster_rcnn_iter_20000.caffemodel use 
+#./my_tools/test_model.sh 0 ResNet101_BN_SCALE_Merged_OHEM faster_rcnn_end2end sign /home/jtao/jto/code/py-faster-rcnn/output/faster_rcnn_end2end/sign_2017_train/resnet101_faster_rcnn_bn_scale_merged_end2end_ohem_iter_80000.caffemodel use
 set -x
 set -e
 
@@ -18,13 +18,14 @@ export PYTHONUNBUFFERED="True"
 GPU_ID=$1
 NET=$2
 NET_lc=${NET,,}
-DATASET=$3
-NET_FINAL=$4
-TEST_ON_TRAIN_DATA=$5
+METHOD=$3
+DATASET=$4
+NET_FINAL=$5
+TEST_ON_TRAIN_DATA=$6
 
 array=( $@ )
 len=${#array[@]}
-EXTRA_ARGS=${array[@]:5:$len}
+EXTRA_ARGS=${array[@]:6:$len}
 EXTRA_ARGS_SLUG=${EXTRA_ARGS// /_}
 
 case $DATASET in
@@ -51,7 +52,7 @@ echo Logging output to "$LOG"
 
 
 time ./tools/test_net.py --gpu ${GPU_ID} \
-  --def models/${PT_DIR}/${NET}/faster_rcnn_end2end/test.prototxt \
+  --def models/${PT_DIR}/${NET}/${METHOD}/test.prototxt \
   --net ${NET_FINAL} \
   --imdb ${TEST_IMDB} \
   --cfg experiments/cfgs/faster_rcnn_end2end.yml \

@@ -7,7 +7,7 @@
 # ./my_tools/train_model.sh 0 VGG16 sign data/imagenet_models/VGG16.v2.caffemodel  faster_rcnn_end2end \
 #   --set EXP_DIR foobar RNG_SEED 42 TRAIN.SCALES "[400, 500, 600, 700]"
 # Example : Resnet
-# ./my_tools/train_model.sh 0 ResNet101_BN_SCALE_Merged_OHEM sign data/imagenet_models/ResNet101_BN_SCALE_Merged.caffemodel faster_rcnn_end2end_ohem  
+# ./my_tools/train_model.sh 0 ResNet101_BN_SCALE_Merged_OHEM sign data/imagenet_models/ResNet101_BN_SCALE_Merged.caffemodel faster_rcnn_end2end  
 
 set -x
 set -e
