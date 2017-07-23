@@ -9,5 +9,6 @@ nohup.out
 /data/cache/
 /data/sign_2017/
 /data/imagenet_models/
+/data/faster_rcnn_models/
 /experiments/logs
 

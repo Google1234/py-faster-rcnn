@@ -27,9 +27,9 @@ import caffe, os, sys, cv2
 import argparse
 import os
 
-CLASSES = ('__background__',
-           'sign')
-
+CLASSES =('__background__', # always index 0
+          'sign')                                       
+  
 def vis_detections(im, class_name, dets, thresh=0.5):
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
@@ -40,8 +40,9 @@ def vis_detections(im, class_name, dets, thresh=0.5):
     for i in inds:
         bbox = dets[i, :4]
         score = dets[i, -1]
-        cv2.rectangle(im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]-bbox[0]), int(bbox[3]-bbox[1])), (0, 255, 0), 1)
-        cv2.putText(im, '{:s} {:.3f}'.format(class_name, score), (int(bbox[0]),int(bbox[1]) - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255))
+	print bbox
+        cv2.rectangle(im, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (0, 255, 0), 1)
+        cv2.putText(im, '{:s} {:.3f}'.format(class_name, score), (int(bbox[0]),int(bbox[1]) - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0,255,255))
     #title
     cv2.putText(im, ('{} detections with p({} | box) >= {:.1f}').format(class_name, class_name,thresh),
                 (500, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255))
