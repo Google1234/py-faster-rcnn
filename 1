@@ -1,0 +1,23 @@
+nohup: ignoring input
++ set -e
++ export PYTHONUNBUFFERED=True
++ PYTHONUNBUFFERED=True
++ GPU_ID=1
++ NET=ResNet101
++ NET_lc=resnet101
++ METHOD=faster_rcnn_end2end
++ DATASET=sign
++ INIT_MODEL=data/imagenet_models/ResNet101_BN_SCALE_Merged.caffemodel
++ array=($@)
++ len=5
++ EXTRA_ARGS=
++ EXTRA_ARGS_SLUG=
++ case $DATASET in
++ TRAIN_IMDB=sign_2017_train
++ TEST_IMDB=sign_2017_trainval
++ PT_DIR=sign
++ ITERS=490000
+++ date +%Y-%m-%d_%H-%M-%S
++ LOG=experiments/logs/faster_rcnn_end2end_ResNet101_.txt.2017-07-26_11-26-22
++ exec
+++ tee -a experiments/logs/faster_rcnn_end2end_ResNet101_.txt.2017-07-26_11-26-22
