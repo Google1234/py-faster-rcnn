@@ -29,7 +29,8 @@ class sign(imdb):
         self._data_path = os.path.join(self._devkit_path)
         self._classes = ('__background__', # always index 0
                          'sign')
-        self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
+        self.signs_set=set(self._classes)
+	self._class_to_ind = dict(zip(self.classes, xrange(self.num_classes)))
         self._image_ext = '.png'
         self._image_index = self._load_image_set_index()
         # Default to roidb handler
@@ -184,7 +185,7 @@ class sign(imdb):
         num_objs=0
         for line in lines:
             s=line.split(' ')
-            if s[0]=='sign':
+            if s[0] in self.signs_set:
                 num_objs+=1
                 objs.append(s)
 				
@@ -208,7 +209,7 @@ class sign(imdb):
             seg_areas[ix] = (x2 - x1 + 1) * (y2 - y1 + 1)
 
         overlaps = scipy.sparse.csr_matrix(overlaps)
-
+	
         return {'boxes' : boxes,
                 'gt_classes': gt_classes,
                 'gt_overlaps' : overlaps,
